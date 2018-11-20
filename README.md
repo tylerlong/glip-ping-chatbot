@@ -99,7 +99,7 @@ provider:
 package:
   exclude:
     - ./**
-    - '!dist/**'
+    - '!lambda.js'
     - '!node_modules/**'
   excludeDevDependencies: true
 functions:
