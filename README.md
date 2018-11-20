@@ -46,16 +46,7 @@ Please read the instructions for [how to create a RingCentral chatbot app](https
 
 ### Specify environment variables:
 
-Create `.env` file with following content:
-
-```
-RINGCENTRAL_SERVER=https://platform.dev.ringcentral.com
-RINGCENTRAL_CHATBOT_DATABASE_CONNECTION_URI=
-RINGCENTRAL_CHATBOT_CLIENT_ID=
-RINGCENTRAL_CHATBOT_CLIENT_SECRET=
-RINGCENTRAL_CHATBOT_SERVER=https://<chatbot-server>
-RINGCENTRAL_CHATBOT_EXPRESS_PORT=3000
-```
+Create `.env` file using [.express.env](https://github.com/tylerlong/ringcentral-chatbot-js/blob/master/.express.env) as template.
 
 - RINGCENTRAL_SERVER, use https://platform.dev.ringcentral.com for sandbox and https://platform.ringcentral.com for production
 - RINGCENTRAL_CHATBOT_DATABASE_CONNECTION_URI, please sepcify connection URI to a relational database.
@@ -82,6 +73,8 @@ const handle = async event => {
 const app = createApp(handle)
 app.listen(process.env.RINGCENTRAL_CHATBOT_EXPRESS_PORT)
 ```
+
+For latest code, please check [express.js of this repository](./express.js).
 
 
 ### Start the bot
