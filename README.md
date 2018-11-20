@@ -144,7 +144,13 @@ Login https://developer.ringcentral.com, navigate to your bot app, open "Setting
 ### Create database tables
 
 ```
-curl -X PUT https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod/admin/setup-database
+curl -X PUT https://<chatbot-server>/prod/admin/setup-database
 ```
 
 For more information, please read [setup database](https://github.com/tylerlong/ringcentral-chatbot-js#setup-database).
+
+
+### [Add the bot to Glip](https://github.com/tylerlong/glip-ping-chatbot/tree/master#add-the-bot-to-glip)
+
+
+### [Test the bot](https://github.com/tylerlong/glip-ping-chatbot/tree/master#test-the-bot)
