@@ -15,12 +15,14 @@ Please note that, even you are planning to host your bot on AWS Lambda, it is st
 ### Install dependencies
 
 ```
-yarn add ringcentral-chatbot pg
+yarn add ringcentral-chatbot pg serverless-http
 yarn add --dev serverless
 ```
 
 We installed `pg` because we would like to use PostgreSQL as database. In order to deploy to AWS Lambda, you can choose either PostgreSQL or MySQL as database. Install `mysql` of you use MySQL as database.
 For local development, you can choose SQLite(refer to [Quick start with Express.js](https://github.com/tylerlong/glip-ping-chatbot/tree/express#quick-start-with-expressjs)).
+
+We use [serverless-http](https://github.com/dougmoscrop/serverless-http) to use Express.js code in AWS Lambda. So that we can reuse code between Express.js and AWS Lambda.
 
 We use [serverless](https://github.com/serverless/serverless) framework to help us deploy the project to AWS  with ease.
 
@@ -50,7 +52,9 @@ You may notice that the code is similar to [its Express.js version](https://gith
 
 ### Create a RingCentral app
 
-Please read the instructions for [how to create a RingCentral chatbot app](how to create a RingCentral chatbot app).
+Please read the instructions for [how to create a RingCentral chatbot app](https://github.com/tylerlong/ringcentral-chatbot-js#create-a-ringcentral-app).
+
+Leave "OAuth Redirect URI" empty for now because we don't know it until we deploy the project to AWS.
 
 
 ### Create & configure database on AWS RDS
@@ -70,7 +74,7 @@ Create `.env.yml` file using [.lambda.env.yml](https://github.com/tylerlong/ring
 - RINGCENTRAL_CHATBOT_DATABASE_CONNECTION_URI, please sepcify connection URI to a relational database.
     - For
 - RINGCENTRAL_CHATBOT_CLIENT_ID & RINGCENTRAL_CHATBOT_CLIENT_SECRET could be found in the newly created RingCentral app.
-- RINGCENTRAL_CHATBOT_SERVER We don't know until we deploy the project to AWS, let's leave it empty for now.
+- RINGCENTRAL_CHATBOT_SERVER We don't know until we deploy the project to AWS, let's specify a dummy one for now: `https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod`
 
 
 ### Create serverless.yml
@@ -113,3 +117,34 @@ functions:
 ```
 npx sls deploy
 ```
+
+
+### Update .env.yml
+
+Since we just deployed the project to AWS, now we know the RINGCENTRAL_CHATBOT_SERVER. It should be in the form of "https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod"
+
+Update `RINGCENTRAL_CHATBOT_SERVER` in `.env.yml`.
+
+
+### Deploy to AWS again
+
+Just to apply the change to `.env.yml`:
+
+```
+npx sls deploy
+```
+
+
+### Update "OAuth Redirect URI" for RingCentral app
+
+Login https://developer.ringcentral.com, navigate to your bot app, open "Settings" tab, set "OAuth Redirect URI" to "https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod/bot/oauth"
+
+
+
+### Create database tables
+
+```
+curl -X PUT https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod/admin/setup-database
+```
+
+For more information, please read [setup database](https://github.com/tylerlong/ringcentral-chatbot-js#setup-database).
