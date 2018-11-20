@@ -61,7 +61,7 @@ Leave "OAuth Redirect URI" empty for now because we don't know it until we deplo
 
 Login [AWS Console](https://console.aws.amazon.com) and navigate to [RDS](https://console.aws.amazon.com/rds/home?region=us-east-1)
 
-Create a PostgreSQL database, configure the security group so that it is publicly accessibly with username and password.
+Create a PostgreSQL database, **configure the security group so that it is publicly accessible** with username and password.
 
 Take a note of the database uri, database name, username and password, we will use them soon.
 
