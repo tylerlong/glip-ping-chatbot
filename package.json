@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "ringcentral-chatbot": "^0.3.6",
+    "ringcentral-chatbot": "^0.3.7",
     "sqlite3": "^4.0.4"
   },
   "devDependencies": {
