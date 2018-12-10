@@ -7,6 +7,12 @@ This chatbot is mainly served as a hello-world style demo bot for developers.
 This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](https://github.com/tylerlong/ringcentral-chatbot-js).
 
 
+## Tutorials
+
+- If you want to create a Glip chatbot and deploy it to your own server, please [read this tutorial](https://github.com/tylerlong/glip-ping-chatbot/tree/express) or [watch this video](https://youtu.be/CR66cwHvsOI).
+- If you want to create a Glip chatbot and deploy it to AWS Lambda, please [read this tutorial](https://github.com/tylerlong/glip-ping-chatbot/tree/lambda) or [watch this video](https://youtu.be/JoEMXYmtn4Y).
+
+
 ### Add the bot to Glip
 
 Login https://developer.ringcentral.com, navigate to your app, go to "Bot" tab, click "Add to Glip" button.
