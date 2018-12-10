@@ -72,7 +72,8 @@ Create `.env.yml` file using [.lambda.env.yml](https://github.com/tylerlong/ring
 
 - RINGCENTRAL_SERVER, use https://platform.dev.ringcentral.com for sandbox and https://platform.ringcentral.com for production
 - RINGCENTRAL_CHATBOT_DATABASE_CONNECTION_URI, please sepcify connection URI to a relational database.
-    - For
+    - SQLite, MySQL and PostgreSQL are supported
+    - We specify the AWS RDS we created above
 - RINGCENTRAL_CHATBOT_CLIENT_ID & RINGCENTRAL_CHATBOT_CLIENT_SECRET could be found in the newly created RingCentral app.
 - RINGCENTRAL_CHATBOT_SERVER We don't know until we deploy the project to AWS, let's specify a dummy one for now: `https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod`
 
