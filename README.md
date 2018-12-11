@@ -12,6 +12,14 @@ This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](ht
 Please note that, even you are planning to host your bot on AWS Lambda, it is still useful to run an Express.js server during development. So you might be interested in [Quick start with Express.js](https://github.com/tylerlong/glip-ping-chatbot/tree/express).
 
 
+### Create an empty project
+
+```
+mkdir <bot-project-name>
+cd <bot-project-name>
+```
+
+
 ### Install dependencies
 
 ```
@@ -58,6 +66,8 @@ Leave "OAuth Redirect URI" empty for now because we don't know it until we deplo
 
 
 ### Create & configure database on AWS RDS
+
+This step is optional if you already have a MySQL or PostgreSQL database.
 
 Login [AWS Console](https://console.aws.amazon.com) and navigate to [RDS](https://console.aws.amazon.com/rds/home?region=us-east-1)
 
