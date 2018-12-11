@@ -11,6 +11,15 @@ This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](ht
 
 [Watch this video](https://youtu.be/CR66cwHvsOI) and follow the instructions below:
 
+
+### Create an empty project
+
+```
+mkdir <bot-project-name>
+cd <bot-project-name>
+```
+
+
 ### Install dependencies
 
 ```
