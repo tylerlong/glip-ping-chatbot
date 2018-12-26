@@ -54,6 +54,8 @@ In content below, we call the public address `https://<chatbot-server>`.
 
 Please read the instructions for [how to create a RingCentral chatbot app](https://github.com/tylerlong/ringcentral-chatbot-js#create-a-ringcentral-app).
 
+Redirect URI should be set to `https://<chatbot-server>/bot/oauth`.
+
 
 ### Specify environment variables:
 
@@ -98,7 +100,7 @@ node -r dotenv/config express.js
 ### Create database tables
 
 ```
-curl -X PUT https://<chatbot-server>/admin/setup-database
+curl -X PUT -u admin:user https://<chatbot-server>/admin/setup-database
 ```
 
 For more information, please read [setup database](https://github.com/tylerlong/ringcentral-chatbot-js#setup-database).
