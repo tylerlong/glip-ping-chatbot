@@ -155,7 +155,7 @@ Login https://developer.ringcentral.com, navigate to your bot app, open "Setting
 ### Create database tables
 
 ```
-curl -X PUT https://<chatbot-server>/prod/admin/setup-database
+curl -X PUT -u admin:password https://<chatbot-server>/prod/admin/setup-database
 ```
 
 For more information, please read [setup database](https://github.com/tylerlong/ringcentral-chatbot-js#setup-database).
