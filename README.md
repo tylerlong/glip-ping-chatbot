@@ -86,6 +86,7 @@ Create `.env.yml` file using [.lambda.env.yml](https://github.com/tylerlong/ring
     - We specify the AWS RDS we created above
 - RINGCENTRAL_CHATBOT_CLIENT_ID & RINGCENTRAL_CHATBOT_CLIENT_SECRET could be found in the newly created RingCentral app.
 - RINGCENTRAL_CHATBOT_SERVER We don't know until we deploy the project to AWS, let's specify a dummy one for now: `https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod`
+- RINGCENTRAL_CHATBOT_ADMIN_USERNAME & RINGCENTRAL_CHATBOT_ADMIN_PASSWORD are username and password for administrator.
 
 
 ### Create serverless.yml
@@ -157,6 +158,8 @@ Login https://developer.ringcentral.com, navigate to your bot app, open "Setting
 ```
 curl -X PUT -u admin:password https://<chatbot-server>/prod/admin/setup-database
 ```
+
+`admin` & `password` are defined in `/env.yml` file we created above.
 
 For more information, please read [setup database](https://github.com/tylerlong/ringcentral-chatbot-js#setup-database).
 
