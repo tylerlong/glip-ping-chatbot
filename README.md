@@ -9,7 +9,8 @@ This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](ht
 
 ## Quick start with AWS Lambda
 
-Please note that, even you are planning to host your bot on AWS Lambda, it is still useful to run an Express.js server during development. So you might be interested in [Quick start with Express.js](https://github.com/tylerlong/glip-ping-chatbot/tree/express).
+Please note that, even you are planning to host your bot on AWS Lambda, it is still useful to run an Express.js server during development.
+So you might be interested in [Quick start with Express.js](https://github.com/tylerlong/glip-ping-chatbot/tree/express).
 
 
 ### Create an empty project
@@ -27,12 +28,12 @@ yarn add ringcentral-chatbot pg serverless-http
 yarn add --dev serverless
 ```
 
-We installed `pg` because we would like to use PostgreSQL as database. In order to deploy to AWS Lambda, you can choose either PostgreSQL or MySQL as database. Install `mysql` of you use MySQL as database.
-For local development, you can choose SQLite(refer to [Quick start with Express.js](https://github.com/tylerlong/glip-ping-chatbot/tree/express#quick-start-with-expressjs)).
+We installed `pg` because we would like to use PostgreSQL as database.
 
-We use [serverless-http](https://github.com/dougmoscrop/serverless-http) to use Express.js code in AWS Lambda. So that we can reuse code between Express.js and AWS Lambda.
+We use [serverless-http](https://github.com/dougmoscrop/serverless-http) to use Express.js code in AWS Lambda.
+So that we can reuse code between Express.js and AWS Lambda.
 
-We use [serverless](https://github.com/serverless/serverless) framework to help us deploy the project to AWS  with ease.
+We use [serverless](https://github.com/serverless/serverless) framework to help us to deploy the project to AWS  with ease.
 
 
 ### Coding
@@ -65,28 +66,16 @@ Please read the instructions for [how to create a RingCentral chatbot app](https
 Leave "OAuth Redirect URI" empty for now because we don't know it until we deploy the project to AWS.
 
 
-### Create & configure database on AWS RDS
-
-This step is optional if you already have a MySQL or PostgreSQL database.
-
-Login [AWS Console](https://console.aws.amazon.com) and navigate to [RDS](https://console.aws.amazon.com/rds/home?region=us-east-1)
-
-Create a PostgreSQL database, **configure the security group so that it is publicly accessible** with username and password.
-
-Take a note of the database uri, database name, username and password, we will use them soon.
-
-
 ### Specify environment variables:
 
 Create `.env.yml` file using [.lambda.env.yml](https://github.com/tylerlong/ringcentral-chatbot-js/blob/master/.lambda.env.yml) as template.
 
-- RINGCENTRAL_SERVER, use https://platform.dev.ringcentral.com for sandbox and https://platform.ringcentral.com for production
-- RINGCENTRAL_CHATBOT_DATABASE_CONNECTION_URI, please sepcify connection URI to a relational database.
-    - SQLite, MySQL and PostgreSQL are supported
-    - We specify the AWS RDS we created above
-- RINGCENTRAL_CHATBOT_CLIENT_ID & RINGCENTRAL_CHATBOT_CLIENT_SECRET could be found in the newly created RingCentral app.
-- RINGCENTRAL_CHATBOT_SERVER We don't know until we deploy the project to AWS, let's specify a dummy one for now: `https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod`
-- RINGCENTRAL_CHATBOT_ADMIN_USERNAME & RINGCENTRAL_CHATBOT_ADMIN_PASSWORD are username and password for administrator.
+- `RINGCENTRAL_SERVER` use https://platform.dev.ringcentral.com for sandbox and https://platform.ringcentral.com for production
+- `RINGCENTRAL_CHATBOT_CLIENT_ID` & `RINGCENTRAL_CHATBOT_CLIENT_SECRET` could be found in the newly created RingCentral app.
+- `RINGCENTRAL_CHATBOT_ADMIN_USERNAME` & `RINGCENTRAL_CHATBOT_ADMIN_PASSWORD` are username and password for administrator.
+- `RINGCENTRAL_CHATBOT_DATABASE_USERNAME` & `RINGCENTRAL_CHATBOT_DATABASE_PASSWORD` are username and password for PostgreSQL database.
+- `RINGCENTRAL_CHATBOT_DATABASE_CONNECTION_URI` please update "username:password" to correct value according to database credentials above
+- Other part should be left untouched
 
 
 ### Create serverless.yml
@@ -94,53 +83,219 @@ Create `.env.yml` file using [.lambda.env.yml](https://github.com/tylerlong/ring
 Create `serverless.yml` with following content:
 
 ```yml
-service:
-  name: demo-ping-chatbot
+service: demo-ping-chatbot
+
 provider:
-  stage: ${opt:stage, 'prod'}
+  stage: prod
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   region: us-east-1
   memorySize: 256
+  timeout: 30 # maximum value allowed by api gateway
   environment: ${file(./.env.yml)}
   iamRoleStatements:
     - Effect: Allow
       Action:
         - lambda:InvokeFunction
       Resource: "*"
+  vpc:
+    securityGroupIds:
+      - Ref: LambdaSecurityGroup
+    subnetIds:
+      - Ref: PrivateSubnet1
+      - Ref: PrivateSubnet2
+      - Ref: PrivateSubnet3
+
 package:
   exclude:
     - ./**
     - '!lambda.js'
     - '!node_modules/**'
   excludeDevDependencies: true
+
 functions:
   app:
     handler: lambda.app
-    timeout: 300
+    timeout: 300 # this value is not allowed by api gateway but we have proxy below to workaround it
+    events:
+      - http: 'GET /admin/diagnostic'
   proxy:
     handler: lambda.proxy
     events:
       - http: 'ANY {proxy+}'
+  maintain:
+    handler: lambda.maintain
+    events:
+      - schedule: rate(1 day)
+
+resources:
+  Resources:
+    Vpc:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: 10.0.0.0/16
+
+    PrivateSubnet1:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: us-east-1a
+        CidrBlock: 10.0.1.0/24
+        VpcId:
+          Ref: Vpc
+    PrivateSubnet2:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: us-east-1b
+        CidrBlock: 10.0.2.0/24
+        VpcId:
+          Ref: Vpc
+    PrivateSubnet3:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: us-east-1c
+        CidrBlock: 10.0.3.0/24
+        VpcId:
+          Ref: Vpc
+
+    PublicSubnet1:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: us-east-1d
+        CidrBlock: 10.0.21.0/24
+        VpcId:
+          Ref: Vpc
+
+    LambdaSecurityGroup:
+      Type: "AWS::EC2::SecurityGroup"
+      Properties:
+        GroupName: ${self:service}-${self:provider.stage}-lambda
+        GroupDescription: Allow all outbound traffic, no inbound
+        SecurityGroupIngress:
+          - IpProtocol: -1
+            CidrIp: 127.0.0.1/32
+        VpcId:
+          Ref: Vpc
+
+    DbSecurityGroup:
+      Type: "AWS::EC2::SecurityGroup"
+      Properties:
+        GroupName: ${self:service}-${self:provider.stage}-db
+        GroupDescription: Allow local inbound to port 5432, no outbound
+        SecurityGroupIngress:
+          - CidrIp: 10.0.0.0/16
+            IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            CidrIp: 127.0.0.1/32
+        VpcId:
+          Ref: Vpc
+    DbSubnetGroup:
+      Type: "AWS::RDS::DBSubnetGroup"
+      Properties:
+        DBSubnetGroupName: ${self:service}-${self:provider.stage}
+        DBSubnetGroupDescription: Private database subnet group
+        SubnetIds:
+          - Ref: PrivateSubnet1
+          - Ref: PrivateSubnet2
+          - Ref: PrivateSubnet3
+    Database:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBInstanceIdentifier: ${self:service}-${self:provider.stage}
+        Engine: postgres
+        DBName: dbname
+        AllocatedStorage: 20
+        EngineVersion: 11.2
+        DBInstanceClass: db.t3.micro
+        MasterUsername: ${self:provider.environment.RINGCENTRAL_CHATBOT_DATABASE_USERNAME}
+        MasterUserPassword: ${self:provider.environment.RINGCENTRAL_CHATBOT_DATABASE_PASSWORD}
+        DBSubnetGroupName:
+          Ref: DbSubnetGroup
+        VPCSecurityGroups:
+          - Ref: DbSecurityGroup
+
+    Eip:
+      Type: AWS::EC2::EIP
+      Properties:
+        Domain: vpc
+    NatGateway:
+      Type: AWS::EC2::NatGateway
+      Properties:
+        AllocationId:
+          Fn::GetAtt:
+            - Eip
+            - AllocationId
+        SubnetId:
+          Ref: PublicSubnet1
+    PrivateRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId:
+          Ref: Vpc
+    PrivateRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId:
+          Ref: PrivateRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        NatGatewayId:
+          Ref: NatGateway
+    SubnetRouteTableAssociationPrivate1:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: PrivateSubnet1
+        RouteTableId:
+          Ref: PrivateRouteTable
+    SubnetRouteTableAssociationPrivate2:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: PrivateSubnet2
+        RouteTableId:
+          Ref: PrivateRouteTable
+    SubnetRouteTableAssociationPrivate3:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: PrivateSubnet3
+        RouteTableId:
+          Ref: PrivateRouteTable
+
+    InternetGateway:
+      Type: AWS::EC2::InternetGateway
+    VPCGatewayAttachment:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        VpcId:
+          Ref: Vpc
+        InternetGatewayId:
+          Ref: InternetGateway
+    PublicRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId:
+          Ref: Vpc
+    PublicRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId:
+          Ref: PublicRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId:
+          Ref: InternetGateway
+    SubnetRouteTableAssociationPublic1:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: PublicSubnet1
+        RouteTableId:
+          Ref: PublicRouteTable
 ```
 
 ### Deploy to AWS
-
-```
-npx sls deploy
-```
-
-
-### Update .env.yml
-
-Since we just deployed the project to AWS, now we know the RINGCENTRAL_CHATBOT_SERVER. It should be in the form of "https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod"
-
-Update `RINGCENTRAL_CHATBOT_SERVER` in `.env.yml`.
-
-
-### Deploy to AWS again
-
-Just to apply the change to `.env.yml`:
 
 ```
 npx sls deploy
