@@ -4,7 +4,7 @@ This chatbot is super simple, it replies "pong" whenever it receives "ping".
 
 This chatbot is mainly served as a hello-world style demo bot for developers.
 
-This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](https://github.com/tylerlong/ringcentral-chatbot-js).
+This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](https://github.com/ringcentral/ringcentral-chatbot-js).
 
 
 ## Tutorials
@@ -31,3 +31,5 @@ Find the bot we just added by name. You might need to wait for several minutes. 
 Send "ping" to be bot. The bot should reply you with "pong".
 
 If you add the bot to a multiple user chat group, you need to mention the bot when sending it something, otherwise it won't respond.
+
+By the way, the linked mentioned about is for sandbox only. We recommend during development you do it in sandbox. For production, the url is https://app.glip.com
