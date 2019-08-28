@@ -9,8 +9,8 @@ This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](ht
 
 ## Tutorials
 
-- If you want to create a Glip chatbot and deploy it to your own server, please [read this tutorial](https://github.com/tylerlong/glip-ping-chatbot/tree/express) or [watch this video](https://youtu.be/CR66cwHvsOI).
-- If you want to create a Glip chatbot and deploy it to AWS Lambda, please [read this tutorial](https://github.com/tylerlong/glip-ping-chatbot/tree/lambda) or [watch this video](https://youtu.be/JoEMXYmtn4Y).
+- If you want to create a Glip chatbot and deploy it to your own server, please [read this tutorial](https://github.com/tylerlong/glip-ping-chatbot/tree/express).
+- If you want to create a Glip chatbot and deploy it to AWS Lambda, please [read this tutorial](https://github.com/tylerlong/glip-ping-chatbot/tree/lambda).
 
 
 ### Add the bot to Glip
