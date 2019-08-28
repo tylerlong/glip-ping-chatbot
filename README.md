@@ -9,11 +9,6 @@ This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](ht
 
 ## Quick start with Express.js
 
-[Watch this video](https://youtu.be/CR66cwHvsOI) and follow the instructions below.
-
-Please note that: the video may be a little out-of-date, but instructions here should always be up-to-date.
-
-
 ### Create an empty project
 
 ```
@@ -25,16 +20,11 @@ cd <bot-project-name>
 ### Install dependencies
 
 ```
-yarn add ringcentral-chatbot sqlite3
+yarn add ringcentral-chatbot sqlite3 axios
 yarn add --dev dotenv ngrok
 ```
 
-[ringcentral-chatbot](https://github.com/tylerlong/ringcentral-chatbot-js) is the RingCentral chatbot framework.
-
 We use SQLite as our database here, so we installed `sqlite3`. It is a good idea to use SQLite during development phase.
-Currently PostgreSQL, MySQL & SQLite are supported. Please install `pg` if you use PostgreSql or `mysql` if you use MySQL.
-
-`dotenv` allows us to specify environment variables in a `.env` file. `ngrok` allows us to generate a public address.
 
 
 ### Start ngrok to get a public address
@@ -80,6 +70,7 @@ Create `.env` file using [.express.env](https://github.com/tylerlong/ringcentral
 Create `express.js` file with following content:
 
 ```js
+const axios = require('axios')
 const createApp = require('ringcentral-chatbot/dist/apps').default
 
 const handle = async event => {
@@ -90,6 +81,14 @@ const handle = async event => {
 }
 const app = createApp(handle)
 app.listen(process.env.RINGCENTRAL_CHATBOT_EXPRESS_PORT)
+
+setInterval(async () => axios.put(`${process.env.RINGCENTRAL_CHATBOT_SERVER}/admin/maintain`, undefined, {
+  auth: {
+    username: process.env.RINGCENTRAL_CHATBOT_ADMIN_USERNAME,
+    password: process.env.RINGCENTRAL_CHATBOT_ADMIN_PASSWORD
+  }
+})
+, 24 * 60 * 60 * 1000)
 ```
 
 For latest code, please check [express.js of this repository](./express.js).
