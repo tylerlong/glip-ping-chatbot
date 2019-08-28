@@ -4,7 +4,7 @@ This chatbot is super simple, it replies "pong" whenever it receives "ping".
 
 This chatbot is mainly served as a hello-world style demo bot for developers.
 
-This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](https://github.com/tylerlong/ringcentral-chatbot-js).
+This chatbot is powered by the [ringcentral-chatbot framework for JavaScript](https://github.com/ringcentral/ringcentral-chatbot-js).
 
 
 ## Quick start with AWS Lambda
@@ -24,16 +24,11 @@ cd <bot-project-name>
 ### Install dependencies
 
 ```
-yarn add ringcentral-chatbot pg serverless-http
+yarn add ringcentral-chatbot pg serverless-http axios
 yarn add --dev serverless
 ```
 
 We installed `pg` because we would like to use PostgreSQL as database.
-
-We use [serverless-http](https://github.com/dougmoscrop/serverless-http) to use Express.js code in AWS Lambda.
-So that we can reuse code between Express.js and AWS Lambda.
-
-We use [serverless](https://github.com/serverless/serverless) framework to help us to deploy the project to AWS  with ease.
 
 
 ### Coding
@@ -44,6 +39,7 @@ Create `lambda.js` file with the following content:
 const createApp = require('ringcentral-chatbot/dist/apps').default
 const { createAsyncProxy } = require('ringcentral-chatbot/dist/lambda')
 const serverlessHTTP = require('serverless-http')
+const axios = require('axios')
 
 const handle = async event => {
   const { type, text, group, bot } = event
@@ -54,6 +50,13 @@ const handle = async event => {
 const app = createApp(handle)
 module.exports.app = serverlessHTTP(app)
 module.exports.proxy = createAsyncProxy('app')
+module.exports.maintain = async () => axios.put(`${process.env.RINGCENTRAL_CHATBOT_SERVER}/admin/maintain`, undefined, {
+  auth: {
+    username: process.env.RINGCENTRAL_CHATBOT_ADMIN_USERNAME,
+    password: process.env.RINGCENTRAL_CHATBOT_ADMIN_PASSWORD
+  }
+})
+
 ```
 
 You may notice that the code is similar to [its Express.js version](https://github.com/tylerlong/glip-ping-chatbot/tree/express#coding), Especially the `handle` method is identical. This is because we would like to allow code reusing, no matter you deploy your chatbot as Express.js server or to AWS Lambda.
