@@ -1,12 +1,12 @@
 {
   "dependencies": {
-    "pg": "^7.6.1",
-    "ringcentral-chatbot": "^0.3.7",
-    "serverless-http": "^1.8.0"
+    "pg": "^7.12.1",
+    "ringcentral-chatbot": "^1.2.5",
+    "serverless-http": "^2.3.0"
   },
   "devDependencies": {
-    "serverless": "^1.33.2",
-    "standard": "^12.0.1",
-    "yarn-upgrade-all": "^0.5.0"
+    "serverless": "^1.51.0",
+    "standard": "^14.0.2",
+    "yarn-upgrade-all": "^0.5.2"
   }
 }
