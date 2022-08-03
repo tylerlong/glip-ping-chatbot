@@ -20,8 +20,8 @@ cd <bot-project-name>
 ### Install dependencies
 
 ```
-yarn add ringcentral-chatbot sqlite3 axios
-yarn add --dev dotenv ngrok
+npm i ringcentral-chatbot sqlite3 axios
+npm i dotenv ngrok --save-dev
 ```
 
 We use SQLite as our database here, so we installed `sqlite3`. It is a good idea to use SQLite during development phase.
