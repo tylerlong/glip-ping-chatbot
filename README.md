@@ -125,7 +125,7 @@ functions:
   proxy:
     handler: lambda.proxy
     events:
-      - http: 'ANY {proxy+}'
+      - http: 'ANY /{proxy+}'
   maintain:
     handler: lambda.maintain
     events:
