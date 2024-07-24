@@ -63,6 +63,9 @@ Create `.env` file using [.express.env](https://github.com/tylerlong/ringcentral
 - `RINGCENTRAL_CHATBOT_EXPRESS_PORT` is the port we used for Express.js. It should match the ngrok command above.
 - `RINGCENTRAL_CHATBOT_ADMIN_USERNAME` & `RINGCENTRAL_CHATBOT_ADMIN_PASSWORD` are the admin username and password.
     - Admin is the bot admin. It's normally the bot creator or maintainer.
+    - You don't need to look up the username and password anywhere, just specify them here.
+    - It's not asking you to use any existing username/password. It's asking you to SPECIFY a new username and password here.
+    - You may change the username and password later. But every time you change them, you need to restart the bot process.
 
 
 ### coding
